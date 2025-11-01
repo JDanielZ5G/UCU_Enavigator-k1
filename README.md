@@ -59,11 +59,11 @@ Execute the SQL scripts in the `scripts/` folder in order:
 - `002_create_profiles_table.sql`
 - `003_admin_policies.sql`
 - `004_seed_sample_events.sql` (run AFTER creating your first user account)
-- `005_fix_infinite_recursion_and_add_department.sql` (**CRITICAL** - fixes RLS bug and enables admin system)
+- `007_setup_role_based_access.sql` (**CRITICAL** - fixes RLS bug and enables admin system)
 
 **Important**: 
 - Create at least one user account via signup before running the seed script to avoid foreign key constraint errors.
-- Script 005 MUST be run to fix the "infinite recursion detected in policy" error and enable the department admin system.
+- Script 007 MUST be run to fix the "infinite recursion detected in policy" error and enable the department admin system.
 
 5. Start the development server:
 \`\`\`bash
@@ -113,9 +113,9 @@ The application implements a two-tier access control system:
 
 #### Department Admins (3 Designated Users)
 Only these email addresses have admin privileges:
-- `admin1@ucu.ac.ug` - Computing & Technology Department
-- `admin2@ucu.ac.ug` - Visual Art & Design Department
-- `admin3@ucu.ac.ug` - Engineering Department
+- `wasikejamesdaniel@gmail.com` - Admin 1
+- `wjdaniel379@gmail.com` - Admin 2
+- `trizzydaniels352@gmail.com` - Admin 3
 
 **Admin Capabilities:**
 - Create events (published immediately as "approved")
@@ -162,22 +162,23 @@ To change which emails have admin access:
 1. Update `lib/config/admins.ts`:
 \`\`\`typescript
 export const DEPARTMENT_ADMINS = [
-  'newemail1@ucu.ac.ug',
-  'newemail2@ucu.ac.ug',
-  'newemail3@ucu.ac.ug',
+  'newemail1@example.com',
+  'newemail2@example.com',
+  'newemail3@example.com',
 ]
 \`\`\`
 
-2. Update the database trigger in `scripts/005_fix_infinite_recursion_and_add_department.sql`:
+2. Update the database trigger in `scripts/007_setup_role_based_access.sql`:
 \`\`\`sql
-admin_emails TEXT[] := ARRAY[
-  'newemail1@ucu.ac.ug',
-  'newemail2@ucu.ac.ug',
-  'newemail3@ucu.ac.ug'
-];
+IF user_email IN (
+  'newemail1@example.com',
+  'newemail2@example.com',
+  'newemail3@example.com'
+) THEN
+  user_role := 'admin';
 \`\`\`
 
-3. Re-run script 005 in Supabase SQL editor
+3. Re-run script 007 in Supabase SQL editor
 4. Redeploy the application to Vercel
 
 ### Password Reset Flow
@@ -244,10 +245,10 @@ ucu-event-nav/
 
 **Cause**: RLS policy on profiles table queries itself, creating infinite loop.
 
-**Solution**: Run `scripts/005_fix_infinite_recursion_and_add_department.sql`. This script:
+**Solution**: Run `scripts/007_setup_role_based_access.sql`. This script:
 - Creates a helper function `is_admin()` to prevent recursion
 - Updates all RLS policies to use the function
-- Implements the 3-admin system
+- Implements the 3-admin system with hardcoded emails
 - Fixes role assignments
 
 ### Foreign Key Constraint Error
@@ -263,13 +264,13 @@ insert or update on table "events" violates foreign key constraint "events_creat
 
 **Possible Causes:**
 1. User email is not in the DEPARTMENT_ADMINS list
-2. Script 005 hasn't been executed
+2. Script 007 hasn't been executed
 3. User role is 'student' instead of 'admin'
 
 **Solution**:
 - Verify email is in `lib/config/admins.ts`
 - Check user role in Supabase profiles table
-- Ensure script 005 has been run
+- Ensure script 007 has been run
 - Try logging out and back in
 
 ### Authentication Issues
@@ -280,7 +281,7 @@ insert or update on table "events" violates foreign key constraint "events_creat
 
 ### Events Not Loading
 
-- Confirm database migrations have been run successfully (especially script 005)
+- Confirm database migrations have been run successfully (especially script 007)
 - Check that at least one approved event exists
 - Verify RLS policies are enabled on the events table
 - Clear browser cache and localStorage

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ArrowLeft, AlertCircle } from "lucide-react"
+import { ArrowLeft, AlertCircle, Shield } from "lucide-react"
 import Link from "next/link"
 import { validateEventData } from "@/lib/utils/validation"
 
@@ -23,6 +23,9 @@ export default function CreateEventPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  // </CHANGE>
 
   const [formData, setFormData] = useState({
     title: "",
@@ -35,6 +38,38 @@ export default function CreateEventPage() {
     longitude: "",
     google_form_url: "",
   })
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (!user) {
+          router.push("/auth/login")
+          return
+        }
+
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+        if (profile?.role !== "admin") {
+          router.push("/events")
+          return
+        }
+
+        setIsAdmin(true)
+      } catch (err) {
+        console.error("Error checking admin status:", err)
+        router.push("/events")
+      } finally {
+        setIsCheckingAuth(false)
+      }
+    }
+
+    checkAdminStatus()
+  }, [router, supabase])
+  // </CHANGE>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,8 +118,9 @@ export default function CreateEventPage() {
       const { error: insertError } = await supabase.from("events").insert({
         ...eventData,
         created_by: user.id,
-        status: "pending",
+        status: "approved", // Admins can directly approve their own events
       })
+      // </CHANGE>
 
       if (insertError) throw insertError
 
@@ -95,6 +131,27 @@ export default function CreateEventPage() {
       setIsLoading(false)
     }
   }
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <p className="text-muted-foreground">Verifying admin access...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // If not admin, don't render the form (will redirect)
+  if (!isAdmin) {
+    return null
+  }
+  // </CHANGE>
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -108,10 +165,14 @@ export default function CreateEventPage() {
 
         <Card>
           <CardHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="h-5 w-5 text-blue-600" />
+              <span className="text-sm font-medium text-blue-600">Admin Access</span>
+            </div>
+            {/* </CHANGE> */}
             <CardTitle className="text-2xl">Create New Event</CardTitle>
             <CardDescription>
-              Fill in the details below to create a new event. Your event will be reviewed by an admin before being
-              published.
+              Fill in the details below to create a new event. As an admin, your event will be automatically approved.
             </CardDescription>
           </CardHeader>
           <CardContent>

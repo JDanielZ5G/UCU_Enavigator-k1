@@ -7,16 +7,16 @@
  * To modify admin list: Update this array and redeploy the application.
  */
 export const DEPARTMENT_ADMINS = [
-  "admin1@ucu.ac.ug", // Computing & Technology Department Admin
-  "admin2@ucu.ac.ug", // Visual Art & Design Department Admin
-  "admin3@ucu.ac.ug", // Engineering Department Admin
+  "wasikejamesdaniel@gmail.com", // Admin 1
+  "wjdaniel379@gmail.com", // Admin 2
+  "trizzydaniels352@gmail.com", // Admin 3
 ] as const
 
 /**
  * Check if an email belongs to a department admin
  */
 export function isAdminEmail(email: string): boolean {
-  return DEPARTMENT_ADMINS.includes(email.toLowerCase() as any)
+  return DEPARTMENT_ADMINS.includes(email.toLowerCase().trim() as any)
 }
 
 /**

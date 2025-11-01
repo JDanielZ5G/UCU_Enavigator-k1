@@ -34,7 +34,22 @@ export default function LoginPage() {
 
       if (error) throw error
 
-      router.push("/events")
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+        // Redirect based on role
+        if (profile?.role === "admin") {
+          router.push("/admin")
+        } else {
+          router.push("/events")
+        }
+      }
+      // </CHANGE>
+
       router.refresh()
     } catch (error: any) {
       setError(error.message || "An error occurred during login")
