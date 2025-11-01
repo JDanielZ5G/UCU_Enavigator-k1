@@ -2,9 +2,19 @@
 
 /**
  * Validates if an email belongs to UCU domain
+ * @deprecated - Domain restriction removed to allow open sign-up
+ * Kept for potential future use if domain restriction is needed again
  */
 export function isUCUEmail(email: string): boolean {
   return email.toLowerCase().endsWith("@ucu.ac.ug")
+}
+
+/**
+ * Validates if an email is in a valid format
+ */
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
 }
 
 /**

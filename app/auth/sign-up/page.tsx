@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { isUCUEmail } from "@/lib/utils/validation"
+import { isValidEmail } from "@/lib/utils/validation"
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
@@ -27,21 +27,18 @@ export default function SignUpPage() {
     setIsLoading(true)
     setError(null)
 
-    // Validate UCU email
-    if (!isUCUEmail(email)) {
-      setError("Please use your UCU email address (@ucu.ac.ug)")
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address")
       setIsLoading(false)
       return
     }
 
-    // Validate password match
     if (password !== confirmPassword) {
       setError("Passwords do not match")
       setIsLoading(false)
       return
     }
 
-    // Validate password strength
     if (password.length < 8) {
       setError("Password must be at least 8 characters long")
       setIsLoading(false)
@@ -83,7 +80,7 @@ export default function SignUpPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Sign Up</CardTitle>
-            <CardDescription>Create an account with your UCU email</CardDescription>
+            <CardDescription>Create an account to access events</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp}>
@@ -102,17 +99,17 @@ export default function SignUpPage() {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="email">UCU Email</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="student@ucu.ac.ug"
+                    placeholder="your.email@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                   />
-                  <p className="text-xs text-muted-foreground">Must be a valid @ucu.ac.ug email address</p>
+                  <p className="text-xs text-muted-foreground">You'll receive a verification email</p>
                 </div>
 
                 <div className="grid gap-2">

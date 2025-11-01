@@ -4,7 +4,7 @@ A professional web application for discovering and navigating events at Uganda C
 
 ## Features
 
-- **Authentication**: Secure login/signup restricted to @ucu.ac.ug email domains
+- **Authentication**: Secure login/signup with email verification and password reset
 - **Event Discovery**: Browse, search, and filter events by department and time
 - **Event Sign-Ups**: Integrated Google Forms for RSVP
 - **Notifications**: Browser-based reminders 1 hour before events
@@ -101,6 +101,27 @@ vercel
 vercel --prod
 \`\`\`
 
+## Authentication System
+
+### Version 2.0 Updates (Current)
+
+The authentication system has been updated to provide broader access:
+
+- **Open Sign-Up**: Users can now register with any valid email address (previously restricted to @ucu.ac.ug)
+- **Email Verification**: All new accounts still require email verification for security
+- **Password Reset**: Users can reset forgotten passwords via email link
+- **Role-Based Access**: Separate permissions maintained for regular users and administrators
+
+### Password Reset Flow
+
+1. Click "Forgot Password?" on the login page
+2. Enter your email address
+3. Check your email for the reset link
+4. Click the link and enter your new password
+5. Login with your new credentials
+
+**Note**: The domain restriction code has been preserved in `lib/utils/validation.ts` (marked as deprecated) for potential future use if the university decides to restrict access again.
+
 ## Project Structure
 
 \`\`\`
@@ -173,7 +194,8 @@ insert or update on table "events" violates foreign key constraint "events_creat
 ## Security
 
 - Row Level Security (RLS) enabled on all tables
-- Email domain validation (@ucu.ac.ug only)
+- Email verification required for all new accounts
+- Password reset via secure Supabase tokens
 - Role-based access control for admin features
 - Secure API key management via environment variables
 

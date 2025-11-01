@@ -11,7 +11,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { isUCUEmail } from "@/lib/utils/validation"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -24,13 +23,6 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-
-    // Validate UCU email
-    if (!isUCUEmail(email)) {
-      setError("Please use your UCU email address (@ucu.ac.ug)")
-      setIsLoading(false)
-      return
-    }
 
     const supabase = createClient()
 
@@ -62,17 +54,17 @@ export default function LoginPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>Enter your UCU credentials to access events</CardDescription>
+            <CardDescription>Enter your credentials to access events</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">UCU Email</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="student@ucu.ac.ug"
+                    placeholder="your.email@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -80,7 +72,15 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      href="/auth/reset-password"
+                      className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
                   <Input
                     id="password"
                     type="password"
