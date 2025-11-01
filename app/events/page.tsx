@@ -28,9 +28,6 @@ export default async function EventsPage({
     redirect("/auth/login")
   }
 
-  // Get user profile to check role
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
   const params = await searchParams
 
   return (
@@ -43,31 +40,20 @@ export default async function EventsPage({
               <Image src="/ucu-logo.png" alt="UCU Logo" width={200} height={40} className="h-10 w-auto" />
               <div className="border-l pl-4">
                 <h1 className="text-2xl font-bold text-primary">UCU Event Nav</h1>
-                <p className="text-sm text-muted-foreground">
-                  Welcome, {profile?.full_name || user.email}
-                  {profile?.role === "admin" && (
-                    <span className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
-                      Admin
-                    </span>
-                  )}
-                </p>
+                <p className="text-sm text-muted-foreground">Welcome, {user.email}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              {profile?.role === "admin" ? (
-                <>
-                  <Link href="/admin">
-                    <Button variant="outline">Admin Dashboard</Button>
-                  </Link>
-                  <Link href="/events/create">
-                    <Button>
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Create Event
-                    </Button>
-                  </Link>
-                </>
-              ) : null}
+              <Link href="/admin">
+                <Button variant="outline">Admin Dashboard</Button>
+              </Link>
+              <Link href="/events/create">
+                <Button>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create Event
+                </Button>
+              </Link>
 
               <form action="/auth/logout" method="post">
                 <Button variant="ghost" type="submit">
