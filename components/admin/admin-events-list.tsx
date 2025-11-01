@@ -18,9 +18,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Calendar, MapPin, CheckCircle, XCircle, Trash2, AlertCircle } from "lucide-react"
+import { Calendar, MapPin, CheckCircle, XCircle, Trash2, AlertCircle, ExternalLink } from "lucide-react"
 import { format } from "date-fns"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface AdminEventsListProps {
   status: "pending" | "approved" | "rejected"
@@ -230,6 +231,13 @@ export default function AdminEventsList({ status }: AdminEventsListProps) {
                     <MapPin className="h-4 w-4" />
                     <span className="line-clamp-1">{event.venue}</span>
                   </div>
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    View Details
+                  </Link>
                 </div>
 
                 {/* Action Buttons */}
