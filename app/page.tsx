@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Calendar, MapPin, Users, Shield } from "lucide-react"
+import Image from "next/image"
 
 export default function HomePage() {
   return (
@@ -9,6 +10,18 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center space-y-6 mb-16">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/ucu-logo.png"
+              alt="Uganda Christian University Logo"
+              width={600}
+              height={120}
+              priority
+              className="h-24 w-auto"
+            />
+          </div>
+          {/* </CHANGE> */}
+
           <h1 className="text-5xl font-bold text-primary">UCU Event Nav</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Your gateway to discovering and navigating events at Uganda Christian University&apos;s Faculty of

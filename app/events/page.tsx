@@ -6,6 +6,7 @@ import OfflineIndicator from "@/components/offline/offline-indicator"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { PlusCircle, LogOut } from "lucide-react"
+import Image from "next/image"
 
 export default async function EventsPage({
   searchParams,
@@ -38,10 +39,14 @@ export default async function EventsPage({
       <header className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-primary">UCU Event Nav</h1>
-              <p className="text-sm text-muted-foreground">Welcome, {profile?.full_name || user.email}</p>
+            <div className="flex items-center gap-4">
+              <Image src="/ucu-logo.png" alt="UCU Logo" width={200} height={40} className="h-10 w-auto" />
+              <div className="border-l pl-4">
+                <h1 className="text-2xl font-bold text-primary">UCU Event Nav</h1>
+                <p className="text-sm text-muted-foreground">Welcome, {profile?.full_name || user.email}</p>
+              </div>
             </div>
+            {/* </CHANGE> */}
 
             <div className="flex items-center gap-3">
               {profile?.role === "admin" && (

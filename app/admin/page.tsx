@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import AdminEventsList from "@/components/admin/admin-events-list"
+import Image from "next/image"
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
@@ -31,10 +32,14 @@ export default async function AdminDashboardPage() {
       <header className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Manage events and approvals</p>
+            <div className="flex items-center gap-4">
+              <Image src="/ucu-logo.png" alt="UCU Logo" width={200} height={40} className="h-10 w-auto" />
+              <div className="border-l pl-4">
+                <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
+                <p className="text-sm text-muted-foreground">Manage events and approvals</p>
+              </div>
             </div>
+            {/* </CHANGE> */}
 
             <Link href="/events">
               <Button variant="outline">
